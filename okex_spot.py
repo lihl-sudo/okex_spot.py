@@ -12,10 +12,10 @@ okex=ccxt.okex({
 })
 
 #由于现在直接访问okex会被墙，需要通过代理的方式访问，若是国外服务器则不需要下面的这几行代码
-# okex.proxies={
-#     'http': 'http://127.0.0.1:10808',
-#     'https': 'http://127.0.0.1:10808',
-# }
+okex.proxies={
+    'http': 'http://127.0.0.1:10808',
+    'https': 'http://127.0.0.1:10808',
+}
 # balance=okex.fetch_balance()
 # pprint(balance)
 def buy(side,amount):
@@ -24,7 +24,16 @@ def buy(side,amount):
     order_side=side
     order_amount=amount
     # order_price="28888"
-    take_order=okex.create_order(order_symbol,order_type,order_side,order_amount, params={"tdMode":"cross"})
+    # take_order=okex.create_order(order_symbol,order_type,order_side,order_amount, params={"tdMode":"cross"})
+    take_order=okex.privatePostTradeOrderAlgo({ "instId": order_symbol,
+                                                "tdMode": "cross",
+                                                "side":order_side,
+                                                "ordType":"conditional",
+                                                "sz": order_amount,
+                                                "tpTriggerPx":"40000",
+                                                "tpOrdPx":"-1"
+
+    })
     return take_order
 
 def run():
@@ -38,5 +47,5 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
-    # buy("buy", "1")
+    # run()
+    buy("sell", "1")

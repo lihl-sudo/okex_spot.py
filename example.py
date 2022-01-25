@@ -176,7 +176,7 @@ tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
 # result = tradeAPI.get_fills()
 # 策略委托下单  Place Algo Order
 result = tradeAPI.place_algo_order('BTC-USDT-SWAP', 'cross', 'sell', ordType='conditional',
-                                   sz='1',tpTriggerPx='35988', tpOrdPx='-1' ) #止损slTriggerPx=30000, slOrdPx='-1' 止盈tpTriggerPx='40000', tpOrdPx='-1'
+                                   sz='1',tpTriggerPx='37988', tpOrdPx='-1' ) #止损slTriggerPx=30000, slOrdPx='-1' 止盈tpTriggerPx='40000', tpOrdPx='-1'
 # 撤销策略委托订单  Cancel Algo Order
 # result = tradeAPI.cancel_algo_order([{'algoId': '297394002194735104', 'instId': 'BTC-USDT-210409'}])
 # 获取未完成策略委托单列表  Get Algo Order List
