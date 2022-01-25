@@ -70,4 +70,4 @@ if __name__ == '__main__':
     #         amount=data["amount"]
     #         order=order(side, amount)
     #         print(order)
-    take_profit_order("buy", "1")
+    take_profit_order("sell", "1")
