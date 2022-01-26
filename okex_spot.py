@@ -20,13 +20,19 @@ okex=ccxt.okex({
 # }
 # balance=okex.fetch_balance()
 # pprint(balance)
-def order(side,amount):
+def limit_order(side,amount):
     order_symbol='BTC-USDT-SWAP'  #-SWAP'
-    order_type='market'
     order_side=side
     order_amount=amount
-    # order_price="28888"
-    take_order=okex.create_order(order_symbol,order_type,order_side,order_amount, params={"tdMode":"cross"})
+    order_price="28000"
+    take_order=okex.create_limit_order(order_symbol,order_side,order_amount,order_price,params={"tdMode":"cross"})
+    return take_order
+
+def market_order(side,amount):
+    order_symbol='BTC-USDT-SWAP'  #-SWAP'
+    order_side=side
+    order_amount=amount
+    take_order=okex.create_market_order(order_symbol,order_side,order_amount,params={"tdMode":"cross"})
     return take_order
 
 def stop_order(side,amount):
@@ -55,7 +61,7 @@ def take_profit_order(side,amount):
 
     else:
         order_side = "buy"
-        stop_price=str(int(okex.fetch_ticker("BTC-USDT-SWAP")["close"])-500)
+        stop_price=str(int(okex.fetch_ticker("BTC-USDT-SWAP")["close"])-1000)
     order_symbol="BTC-USDT-SWAP"
     order_amount=amount
     # order_price='50000'
@@ -70,25 +76,33 @@ def take_profit_order(side,amount):
 
 def run():
     while True:
-        data=get_data()
-        if data:
-            side=data["side"]
-            amount=data["amount"]
-            algo_list = okex.privateGetTradeOrdersAlgoPending({"ordType": "conditional"})
-            body_list = []
-            for i in algo_list["data"]:
-                body_list.append({"algoId": i["algoId"], "instId": "BTC-USDT-SWAP"})
-            okex.privatePostTradeCancelAlgos(body_list)
-            okex.privatePostTradeClosePosition({"instId": "BTC-USDT-SWAP", "mgnMode": "cross", "autoCxl": "true"})
-            resp = order(side, amount)
-            print(resp)
-            take_profit_order(side, amount)
-            stop_order(side, amount)
+        try:
+            data=get_data()
+            if data:
+                side=data["side"]
+                amount=data["amount"]
+                algo_list = okex.privateGetTradeOrdersAlgoPending({"ordType": "conditional"})
+                body_list = []
+                for i in algo_list["data"]:
+                    body_list.append({"algoId": i["algoId"], "instId": "BTC-USDT-SWAP"})
+                if body_list:
+                    okex.privatePostTradeCancelAlgos(body_list)
+                    okex.privatePostTradeClosePosition({"instId": "BTC-USDT-SWAP", "mgnMode": "cross", "autoCxl": "true"})
+                # resp = market_order(side, amount)
+                resp = limit_order(side, amount)
+                print(resp)
+                take_profit_order(side, amount)
+                stop_order(side, amount)
+        except Exception as e:
+            print(e)
+            continue
 
 
 
 if __name__ == '__main__':
     run()
+    # algo_list = okex.private
+    # okex.privatePostTradeClosePosition({"instId": "BTC-USDT-SWAP", "mgnMode": "cross", "autoCxl": "true"})
     # order("sell", "1")
     # take_profit_order("sell", "1")
     # stop_order("sell", "1")
