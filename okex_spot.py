@@ -3,8 +3,8 @@ from pprint import pprint
 from qqmail import get_data
 import ccxt
 
-apikey = "bc203ced-30fe-4f5f-a8aa-2f87018d6354"
-secretkey = "A61C6F83E09AFA391F6E8DBEB8D3E701"
+apikey = ""
+secretkey = ""
 password = "lhl19911015"
 
 okex=ccxt.okex({
